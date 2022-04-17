@@ -1,5 +1,27 @@
 <template>
-  <PeriodItem text="12:09 - 12:09 pm" textStyle="begin-end-txt-style" /> 
+  <PeriodItem 
+      v-bind:isCurrent="true"
+      v-bind:periodIndexProp="0" 
+      v-bind:startAt='"4:00 pm"'
+      v-bind:hh="1"
+      v-bind:mm="33"
+      v-bind:ss="53"
+      textStyle = "begin-end-txt-style" 
+      timeTextStyleProps="green-text"
+      periodeContainerStyle="green-boder-top-bottom"
+      periodStyleProp = "period-number-txt-style "
+      secondesStyleProps="green-text"  
+  />
+  <br/> 
+  <PeriodItem 
+    v-bind:periodIndexProp="2" 
+    v-bind:startAt='"4:00 pm"'
+    v-bind:endAt='"18:00 pm"'
+    v-bind:hh="14"
+    v-bind:mm="55"
+    v-bind:ss="20"
+    periodStyleProp = "period-number-txt-style"
+  />
   <DefaultButton v-bind:withIcon="true" btn-text="Button text" :icon-src="require('@/assets/images/clock.svg')" />
   <DefaultText text="Today, 08 Oct" textStyle="today-txt-style" />
   <DefaultText text="Period 3" textStyle="period-number-txt-style" />
