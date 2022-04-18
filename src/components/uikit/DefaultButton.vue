@@ -25,25 +25,3 @@
     }
   });
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-  .default-button-icon {
-    width:13px;
-    height:15.89px;
-    margin-right: 10px;
-  }
-
-  .default-button {
-    border: 1px solid $black-color;
-    box-sizing: border-box;
-    border-radius: 5px;
-    background-color: $transparent;
-    padding: 8px 9px 8px 12px;
-    color: $black-color;
-    font-family: $robotoFont;
-    display: flex;
-    align-items: center;
-  }
-
-</style>

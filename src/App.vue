@@ -26,12 +26,12 @@
   />
   <div v-for="(time, index) in times" :key="index" >
     <PeriodItem 
-      v-bind:periodIndexProp="time.index+1" 
+      v-bind:periodIndexProp="time.index" 
       v-bind:startAt="time.startAt"
       v-bind:endAt="time.endAt"
-      v-bind:hh="time.h"
-      v-bind:mm="time.min"
-      v-bind:ss="time.sec"
+      v-bind:hh="time.hour"
+      v-bind:mm="time.minute"
+      v-bind:ss="time.second"
       periodStyleProp = "period-number-txt-style"
     />
   </div>
@@ -135,19 +135,84 @@ export default defineComponent({
           hours = "0" + miniutes;
         }
         
+        // Ajouter la période à la liste  
         this.times.unshift({
-          index: this.times.length ,
-          h: this.h,
-          min: this.min,
-          sec: this.sec,
+          index: this.times.length +1 ,
+          hour: this.h,
+          minute: this.min,
+          second: this.sec,
           startAt: this.startAt,
           endAt: hours + ":" + miniutes,
         });
+
+        fetch("http://192.168.1.54:3000/period/saveTodayTimers", {
+          method: "Post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            index: this.times.length ,
+            hour: this.h,
+            minute: this.min,
+            second: this.sec,
+            startAt: this.startAt,
+            endAt: hours + ":" + miniutes,
+            createdAt: new Date()
+          })
+        })
+          .then(response => response.json())
 
         this.isRunning = false;
         (this.h = 0), (this.min = 0), (this.sec = 0), clearInterval(this.timer);
         this.timer = 0;
       }
+    },
+    getTimes() {
+      let totalHours : number 
+      totalHours = 0
+      
+      let totalMinutes : number 
+      totalMinutes = 0
+      
+      let totalSeconds : number 
+      totalSeconds = 0
+
+      fetch("http://192.168.1.54:3000/period/getTodayTimers", {
+          "method": "GET",
+          "headers": {
+          }
+      })
+      .then(response => { 
+          if(response.ok){
+              return response.json()    
+          }            
+      })
+        .then(response => {
+          if (response && response.times) {
+            this.times = response.times.reverse();
+            
+            response.times.forEach((value: any) => {
+                totalHours += value.hour; 
+                totalMinutes += value.minute; 
+                totalSeconds += value.second;
+            });
+
+            if (totalSeconds > 59) {
+              totalMinutes += Math.floor(totalSeconds / 60)
+              totalSeconds -=  (Math.floor(totalSeconds / 60)*60)
+            }
+
+            if (totalMinutes > 59) {
+              totalHours += Math.floor(totalMinutes / 60)
+              totalMinutes -=  (Math.floor(totalMinutes / 60) * 60)
+            }
+            
+            this.totalH = totalHours
+            this.totalMin = totalMinutes
+            this.totalSec = totalSeconds
+          }
+      })
+      .catch(err => {
+          console.log(err);
+      });
     },
   },
 
@@ -157,189 +222,20 @@ export default defineComponent({
     const month = now.toLocaleString("default", { month: "short" });
     const date = now.getDate() < 10 ? "0" + now.getDate() : now.getDate();
     this.today = date + " " + month;
+
+    this.getTimes()
+ 
   },
 });
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  padding: 10% 20%;
-}
-
-.total-container {
-  display: flex;
-  justify-content: flex-end;
-  padding: 14px 64px;
-  border-top: 1px solid $light-gray-color;
-  border-bottom: 1px solid $light-gray-color;
-  margin-top: 100px;
-}
-
-.m-r40 {
-  margin-right: 40px;
-}
-
-.m-t20 {
-  margin-top: 20px;
-}
-
-.green-boder-top-bottom {
-  border-top: 1px solid $green-color !important;
-  border-bottom: 1px solid $green-color;
-}
-
-.margin-auto {
-  margin: auto;
-}
-
-.m-b97 {
-  margin-bottom: 97px !important;
-}
-
-.m-b0 {
-  margin-bottom: 0px !important;
-}
-
-.m-r13 {
-  margin-right: 13px !important;
-}
-
-.m-r32 {
-  margin-right: 32px !important;
-}
-
-.flex {
-  display: flex;
-}
-
-.initial-display {
-  display: initial;
-}
-
-.between-h {
-  justify-content: space-between;
-}
-
-.weight-300 {
-  font-weight: 300 !important;
-}
-
-.robotoFontLight {
-  font-family: $robotoFontLight !important;
-}
-
-.red-text {
-  color: $red-color !important;
-}
-
-.red-border {
-  border-color: $red-color !important;
-}
-
-.green-text {
-  color: $green-color !important;
-}
-
-.left-text {
-  text-align: left;
-}
-
-.right-text {
-  text-align: right;
-}
-
-.m-b5 {
-  margin-bottom: 5px !important;
-}
-
-.m-t0 {
-  margin-top: 0px;
-}
-.green-border {
-  border-color: $green-color !important;
-}
-
-.no-bottom-border {
-  border-bottom: none;
-}
-
-.today-txt-style {
-  color: $gray-color-level-5;
-  font-family: $robotoFont;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 30px;
-  line-height: 35px;
-}
-
-.period-number-txt-style {
-  padding-top: 6px;
-  margin: 0px;
-  color: $gray-color-level-4;
-  font-family: $robotoFont;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 19px;
-}
-
-.current-period-txt-style {
-  color: $gray-color-level-1;
-  font-family: $robotoFont;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 19px;
-}
-
-.begin-end-txt-style {
-  color: $gray-color-level-3;
-  font-family: $robotoFontMeduim;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 14px;
-  line-height: 16px;
-}
-
-.time-style {
-  color: $gray-color-level-5;
-  font-family: $robotoFontMeduim;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 25px;
-  line-height: 29px;
-}
-
-.total-time-txt-style {
-  color: $gray-color-level-2;
-  font-family: $robotoFont;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 25px;
-  line-height: 29px;
-}
-
-// Period item
-.defaultPeriodeContainerStyle {
-  padding: 23px 64px;
-  border-top: 1px solid $light-gray-color;
-}
-
-.light-gray-bottom-border {
-  border-bottom: 1px solid $light-gray-color;
-}
-
-.period-number-txt-style {
-  color: $gray-color-level-4;
-  font-family: $robotoFont;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 19px;
-}
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    padding: 10% 20%;
+  }
 </style>

@@ -1,8 +1,8 @@
 interface Times {
     index: Number ,
-    h: Number,
-    min: Number,
-    sec: Number,
+    hour: Number,
+    minute: Number,
+    second: Number,
     startAt: String,
     endAt: String,
 }

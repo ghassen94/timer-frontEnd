@@ -32,15 +32,3 @@
     }
   })
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-  .default-text-style {
-    color: $black-color;
-    font-family: $robotoFont;
-    font-size: 14px;
-  }
-
-
-
-</style>

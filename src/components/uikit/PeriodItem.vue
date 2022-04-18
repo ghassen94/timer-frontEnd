@@ -11,10 +11,11 @@
       </div>
   </div>
 </template>
+
 <script lang = "ts" >
   import { defineComponent } from 'vue';
   import DefaultText from './DefaultText.vue'
-import TimeText from './TimeText.vue'
+  import TimeText from './TimeText.vue'
   
   export default defineComponent({
     name: 'PeriodItem',

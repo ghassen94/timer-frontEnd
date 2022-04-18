@@ -20,12 +20,3 @@
     }
   });
 </script>
-
-<style lang="scss">
-  .default-text-style {
-    color: $black-color;
-    font-family: $robotoFont;
-    font-size: 14px;
-}
-
-</style>
