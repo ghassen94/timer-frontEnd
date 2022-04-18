@@ -145,7 +145,7 @@ export default defineComponent({
           endAt: hours + ":" + miniutes,
         });
 
-        fetch("http://192.168.1.54:3000/period/saveTodayTimers", {
+        fetch("http://127.0.0.1:3000/period/saveTodayTimers", {
           method: "Post",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
@@ -175,7 +175,7 @@ export default defineComponent({
       let totalSeconds : number 
       totalSeconds = 0
 
-      fetch("http://192.168.1.54:3000/period/getTodayTimers", {
+      fetch("http://127.0.0.1:3000/period/getTodayTimers", {
           "method": "GET",
           "headers": {
           }
